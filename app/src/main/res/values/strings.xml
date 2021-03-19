@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">alloResto</string>
+    <string name="titreId">titre</string>
+    <string name="detailId">description</string>
+    <string name="scan_play_ble">Lancer le scan</string>
+    <string name="scan_scan_ble">Scan en cours</string>
+
+
+</resources>

@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 import com.thoughtbot.expandablerecyclerview.viewholders.ChildViewHolder
@@ -17,7 +18,7 @@ import fr.isen.terrasson.alloresto.R
 
 class DetailBleAdapter(
     private val gatt: BluetoothGatt?,
-    private val serviceList: MutableList<BLEService>
+    private val serviceList: MutableList<BLEService>, private val context: Context
 ) :
     ExpandableRecyclerViewAdapter<DetailBleAdapter.ServiceViewHolder, DetailBleAdapter.CharacteristicViewHolder>(
         serviceList
@@ -87,12 +88,13 @@ class DetailBleAdapter(
 
         holder.characteristicProperties.text = "proprietes : ${proprieties(characteristic.properties)}"
 
-        /* holder.characteristicWriteAction.setOnClickListener {
+        holder.characteristicWriteAction.setOnClickListener {
             val alertDialog = AlertDialog.Builder(context)
             val editView = View.inflate(context, R.layout.popup_ecrire, null)
             alertDialog.setView(editView)
             alertDialog.setPositiveButton("Valider") { _, _ ->
-                val texte = editView.popup.text.toString().toByteArray()
+                val popup : TextView = editView.findViewById(R.id.popup)
+                val texte = popup.text.toString().toByteArray()
                 characteristic.setValue(texte)
                 val result1 = gatt?.writeCharacteristic(characteristic)
                 Log.d("erreur : ", result1.toString())
@@ -102,7 +104,7 @@ class DetailBleAdapter(
             alertDialog.setNegativeButton("Annuler") { alertDialog, _ -> alertDialog.cancel() }
             alertDialog.create()
             alertDialog.show()
-        }*/
+        }
 
         holder.characteristicReadAction.setOnClickListener {
             val result = gatt?.readCharacteristic(characteristic)
@@ -143,10 +145,19 @@ class DetailBleAdapter(
                 gatt?.setCharacteristicNotification(characteristic, false)
             }
         }
+
+        Log.d("UUID", characteristic.uuid.toString())
+        Log.d("UUID", BleUuidAttribut.getBLEAttributeFromUUID(characteristic.uuid.toString()).uuid)
+
         if (characteristic.uuid.toString() == BleUuidAttribut.getBLEAttributeFromUUID(characteristic.uuid.toString()).uuid && enabled) {
-            if (characteristic.value == null)
+            if (characteristic.value == null) {
+                Log.d("notify", "NULL")
                 holder.characteristicValue.text = "Valeur : 0"
+            }
+
             else {
+                var temp = (characteristic.value).toString()
+                Log.d("notify", temp)
                 holder.characteristicValue.text =
                     "Valeur : ${byteArrayToHexString(characteristic.value)}"
             }

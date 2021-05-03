@@ -31,7 +31,6 @@ class BLEDetailsActivity : AppCompatActivity() {
 
         //display device info
         binding.deviceDetailBle.text = device?.name ?: "Appareil inconnue"
-        binding.deviceStatut.text = getString(R.string.ble_device_status, getString(R.string.ble_device_status_connecting))
         bluetoothGatt = device?.connectGatt(this, true, gattCallback)
 
 
@@ -46,18 +45,19 @@ class BLEDetailsActivity : AppCompatActivity() {
     private val gattCallback = object : BluetoothGattCallback() {
 
         override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
+
             when (newState) {
                 BluetoothProfile.STATE_CONNECTED -> {
                     runOnUiThread {
-                        statut += STATE_CONNECTED
-                        binding.deviceStatut.text = statut
+                        statut = STATE_CONNECTED
+                        binding.deviceStatut.text = "status : " + statut
                     }
                     bluetoothGatt?.discoverServices()
                 }
                 BluetoothProfile.STATE_DISCONNECTED -> {
                     runOnUiThread {
-                        statut += STATE_DISCONNECTED
-                        binding.deviceStatut.text = statut
+                        statut = STATE_DISCONNECTED
+                        binding.deviceStatut.text = "status : " + statut
                     }
                 }
             }
@@ -104,7 +104,7 @@ class BLEDetailsActivity : AppCompatActivity() {
                             it.uuid.toString(),
                             it.characteristics
                         )
-                    }?.toMutableList() ?: arrayListOf()
+                    }?.toMutableList() ?: arrayListOf(), this@BLEDetailsActivity
                 )
                 binding.recBle.layoutManager = LinearLayoutManager(this@BLEDetailsActivity)
             }

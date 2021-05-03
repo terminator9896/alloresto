@@ -1,11 +1,13 @@
 package fr.isen.terrasson.alloresto.ble
 
 import android.bluetooth.le.ScanResult
+import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import fr.isen.terrasson.alloresto.R
 import fr.isen.terrasson.alloresto.databinding.LyoCellBleBinding
@@ -45,11 +47,11 @@ class DeviceAdapter(
     //utilities
     override fun getItemCount() = scanList.size
     //events
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: BLEScanViewHolder, position: Int) {
-        holder.cellTitle.text   = scanList[position].device.address
+        holder.cellTitle.text   = "MAC : " + scanList[position].device.address
         if(scanList[position].scanRecord?.txPowerLevel != null){
-            holder.cellContent.text = scanList[position].scanRecord?.txPowerLevel.toString()
-            Log.i( " " ,scanList[position].scanRecord?.txPowerLevel.toString())
+            holder.cellContent.text = "Puissance : " + scanList[position].txPower.toString() + "dB"
 
         }
         else{
@@ -57,6 +59,9 @@ class DeviceAdapter(
         }
         holder.cellName.text = scanList[position].scanRecord?.deviceName
         holder.cellTitle.setOnClickListener(){
+            onItemClickListener(scanList[position])
+        }
+        holder.cellName.setOnClickListener {
             onItemClickListener(scanList[position])
         }
     }

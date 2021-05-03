@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "fr.isen.terrasson.alloresto"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -47,6 +47,9 @@ dependencies {
     implementation 'com.android.volley:volley:1.1.1'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation"com.synnapps:carouselview:0.1.5"
+    implementation 'com.thoughtbot:expandablerecyclerview:1.4'
+    implementation 'com.thoughtbot:expandablecheckrecyclerview:1.4'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

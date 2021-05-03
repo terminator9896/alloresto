@@ -7,15 +7,15 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
-import fr.isen.terrasson.alloresto.menu.MenuPlatDetail
 import fr.isen.terrasson.alloresto.databinding.CellCategoryBinding
+import fr.isen.terrasson.alloresto.menu.MenuPlatDetail
 
 private lateinit var binding : CellCategoryBinding
 
 
 class CategoryAdapter(
-    val dataSet: List<MenuPlatDetail>,
-    private val onItemClickListner: (String) -> Unit)
+        val dataSet: List<MenuPlatDetail>,
+        private val onItemClickListner: (MenuPlatDetail) -> Unit)
     : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>(){
 
     class CategoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -41,18 +41,18 @@ class CategoryAdapter(
     {
         val item = dataSet[position]
         holder.title.text = dataSet[position].name
-        holder.detail.text = dataSet[position].ingredients.map { it.name }.joinToString()
-        holder.prix.text = dataSet[position].price[0].price
-        if(dataSet[position].getPicture().isNullOrEmpty()){
+        holder.detail.text = "Composition : " + dataSet[position].ingredients.map { it.name }.joinToString()
+        holder.prix.text = dataSet[position].price[0].price + "€"
+        if(dataSet[position].getFirstPicture().isNullOrEmpty()){
             Picasso.get()
                 .load("https://img.cuisineaz.com/660x660/2014-04-07/i58810-carpaccio-de-saumon.jpg")
                 .into(holder.image)
         }else{
             Picasso.get()
-                .load(dataSet[position].getPicture())
+                .load(dataSet[position].getFirstPicture())
                 .into(holder.image)
         }
-        holder.layout.setOnClickListener { onItemClickListner(dataSet[position].name) }
+        holder.layout.setOnClickListener { onItemClickListner(dataSet[position]) }
            }
 
 }

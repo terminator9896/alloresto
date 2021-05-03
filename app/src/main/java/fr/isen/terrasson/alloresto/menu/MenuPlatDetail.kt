@@ -11,10 +11,13 @@ data class MenuPlatDetail(
     @SerializedName("prices") val price: List<MenuPlatsPrix>
 
 ) : Serializable {
-    fun getPicture() = if(images.isNotEmpty() && images[0].isNotEmpty()){
+    fun getAffichagePrice() = price[0].price + "€"
+    fun getPrice() = price[0].price.toDouble()
+    fun getFirstPicture() = if (images.isNotEmpty() && images[0].isNotEmpty()) {
         images[0]
-        }
-        else {
-            null
-        }
+    } else {
+        null
     }
+
+    fun getIngredients(): String = ingredients.map(MenuPlatIngredients::name).joinToString(", ")
+}

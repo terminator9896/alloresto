@@ -1,13 +1,11 @@
 package fr.isen.terrasson.alloresto.ble
 
-import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothGatt
-import android.bluetooth.BluetoothGattCallback
-import android.bluetooth.BluetoothGattCharacteristic
+import android.bluetooth.*
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
 import fr.isen.terrasson.alloresto.R
 import fr.isen.terrasson.alloresto.databinding.ActivityBLEDetailsBinding
 
@@ -18,6 +16,7 @@ class BLEDetailsActivity : AppCompatActivity() {
     //binding
     private lateinit var binding : ActivityBLEDetailsBinding
     var bluetoothGatt: BluetoothGatt? = null
+    var statut: String = "statut :  "
 
     //init
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,37 +32,88 @@ class BLEDetailsActivity : AppCompatActivity() {
         //display device info
         binding.deviceDetailBle.text = device?.name ?: "Appareil inconnue"
         binding.deviceStatut.text = getString(R.string.ble_device_status, getString(R.string.ble_device_status_connecting))
+        bluetoothGatt = device?.connectGatt(this, true, gattCallback)
 
 
+        bluetoothGatt?.connect()
         connectToDevice(device)
 
     }
-    private fun connectToDevice(device: BluetoothDevice?)
-    {
-        bluetoothGatt = device?.connectGatt(this, false, object : BluetoothGattCallback(){
-            override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
-                super.onConnectionStateChange(gatt,status,newState)
-                connectionStateChange(newState, gatt)
-            }
-
-
-            override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
-
-            }
-
-            override fun onCharacteristicRead(gatt: BluetoothGatt,
-                                              characteristic: BluetoothGattCharacteristic,
-                                              status: Int) {
-
-            }
-        })
-
+    private fun connectToDevice (device: BluetoothDevice?) {
+        bluetoothGatt = device?.connectGatt(this, false, gattCallback)
     }
-    private fun connectionStateChange(newState: Int, gatt: BluetoothGatt?){
-        BLEConnexionState.getBLEConnexionStateFromState(newState)?.let {
+
+    private val gattCallback = object : BluetoothGattCallback() {
+
+        override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
+            when (newState) {
+                BluetoothProfile.STATE_CONNECTED -> {
+                    runOnUiThread {
+                        statut += STATE_CONNECTED
+                        binding.deviceStatut.text = statut
+                    }
+                    bluetoothGatt?.discoverServices()
+                }
+                BluetoothProfile.STATE_DISCONNECTED -> {
+                    runOnUiThread {
+                        statut += STATE_DISCONNECTED
+                        binding.deviceStatut.text = statut
+                    }
+                }
+            }
+        }
+
+        override fun onCharacteristicRead(
+            gatt: BluetoothGatt?,
+            characteristic: BluetoothGattCharacteristic?,
+            status: Int
+        ) {
+            super.onCharacteristicRead(gatt, characteristic, status)
             runOnUiThread {
-                binding.deviceStatut.text = getString(R.string.ble_device_status, getString(it.text))
+                binding.recBle.adapter?.notifyDataSetChanged()
+            }
+        }
+
+        override fun onCharacteristicWrite(
+            gatt: BluetoothGatt?,
+            characteristic: BluetoothGattCharacteristic?,
+            status: Int
+        ) {
+            super.onCharacteristicWrite(gatt, characteristic, status)
+            runOnUiThread {
+                binding.recBle.adapter?.notifyDataSetChanged()
+            }
+        }
+        override fun onCharacteristicChanged(
+            gatt: BluetoothGatt,
+            characteristic: BluetoothGattCharacteristic
+        ) {
+            super.onCharacteristicChanged(gatt, characteristic)
+            runOnUiThread {
+                binding.recBle.adapter?.notifyDataSetChanged()
+            }
+        }
+
+        override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
+            super.onServicesDiscovered(gatt, status)
+            runOnUiThread {
+                binding.recBle.adapter = DetailBleAdapter(
+                    gatt,
+                    gatt?.services?.map {
+                        BLEService(
+                            it.uuid.toString(),
+                            it.characteristics
+                        )
+                    }?.toMutableList() ?: arrayListOf()
+                )
+                binding.recBle.layoutManager = LinearLayoutManager(this@BLEDetailsActivity)
             }
         }
     }
+
+    companion object {
+        private const val STATE_DISCONNECTED = "Déconnecté"
+        private const val STATE_CONNECTED = "Connecté"
+    }
 }
+

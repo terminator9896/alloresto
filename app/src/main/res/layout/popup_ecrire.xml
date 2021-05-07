@@ -14,7 +14,7 @@
         android:backgroundTint="#00FFFFFF"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Write kind things"
+        android:text="@string/write_kind_things"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

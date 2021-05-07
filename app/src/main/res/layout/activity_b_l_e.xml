@@ -12,8 +12,7 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="128dp"
-        android:layout_marginLeft="128dp"
-        android:text="Lancer le scan"
+        android:text="@string/lancer_le_scan"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -54,6 +53,7 @@
         app:layout_constraintBottom_toTopOf="@+id/progressBarBLE"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.373"
-        app:layout_constraintStart_toEndOf="@+id/scanBLE" />
+        app:layout_constraintStart_toEndOf="@+id/scanBLE"
+        android:contentDescription="@string/todo" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

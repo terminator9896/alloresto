@@ -10,5 +10,30 @@
     <string name="ble_device_status_connected">connected</string>
     <string name="ble_device_status_disconnected">deconnected</string>
     <string name="ble_device_status_disconnecting">deconnecting</string>
+    <string name="nbPrice">TextView</string>
+    <string name="composition">TextView</string>
+    <string name="_0">0</string>
+    <string name="nbPrix">TextView</string>
+    <string name="todo">TODO</string>
+    <string name="caract_ristique">Caractéristique</string>
+    <string name="uuid">uuid</string>
+    <string name="propri_t_s">Propriétés</string>
+    <string name="valeur">valeur :</string>
+    <string name="lecture">lecture</string>
+    <string name="notifier">Notifier</string>
+    <string name="ecriture">Ecriture</string>
+    <string name="textview">TextView</string>
+    <string name="lancer_le_scan">Lancer le scan</string>
+    <string name="email">Email :</string>
+    <string name="mot_de_passe">Mot de passe :</string>
+    <string name="je_ne_suis_pas_un_robot">je ne suis pas un robot</string>
+    <string name="connexion">Connexion</string>
+    <string name="acc_s_sans_compte">Accés sans compte</string>
+    <string name="allo_resto">Allo Resto</string>
+    <string name="add">add</string>
+    <string name="device">device</string>
+    <string name="detail">detail</string>
+    <string name="noname">noName</string>
+    <string name="write_kind_things">Write kind things</string>
 
 </resources>

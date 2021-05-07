@@ -7,6 +7,7 @@ import android.content.Context
 import android.util.Log
 import android.view.*
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter
@@ -28,6 +29,8 @@ class DetailBleAdapter(
 
         val serviceName: TextView = itemView.findViewById(R.id.nom_parent)
         val serviceUUID: TextView = itemView.findViewById(R.id.uuid_parent)
+
+
     }
 
     class CharacteristicViewHolder(itemView: View) : ChildViewHolder(itemView) {
@@ -45,7 +48,7 @@ class DetailBleAdapter(
     override fun onCreateGroupViewHolder(parent: ViewGroup, viewType: Int): ServiceViewHolder =
         ServiceViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                R.layout.cell_parent, //correpond au parent, expandable de base
+                R.layout.cell_parent,
                 parent,
                 false
             )
@@ -57,7 +60,7 @@ class DetailBleAdapter(
     ): CharacteristicViewHolder =
         CharacteristicViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                R.layout.cell_enfant, //correspond au cell enfant, info en depliant l'expandable
+                R.layout.cell_enfant,
                 parent,
                 false
             )
@@ -214,4 +217,5 @@ class DetailBleAdapter(
             } ?: UNKNOW_SERVICE
         }
     }
+
 }

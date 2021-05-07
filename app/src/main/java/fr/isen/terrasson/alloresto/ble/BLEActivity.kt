@@ -21,11 +21,9 @@ import fr.isen.terrasson.alloresto.R
 import fr.isen.terrasson.alloresto.databinding.ActivityBLEBinding
 
 
-
-//request id
 const val BLE__REQUEST_ENABLE = 1
 
-//scan period (for timeout call)
+
 const val BLE__SCAN_PERIOD: Long = 10000
 
 
@@ -34,10 +32,8 @@ class BLEActivity : AppCompatActivity() {
 
 
 
-    //binding
     private lateinit var binding : ActivityBLEBinding
 
-    //BLE info
     private var isScanning : Boolean = false
     private var BLEavailable: Boolean = false
     private lateinit var BLEManager: BluetoothManager
@@ -51,19 +47,15 @@ class BLEActivity : AppCompatActivity() {
 
 
 
-    // INITIALIZATION
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
 
 
-        // LAYOUT
 
-        //init binding instance
         binding = ActivityBLEBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        //bind scan button
         binding.imageButton.setOnClickListener {
             if(isScanning){
                 BLEStopScan()
@@ -72,7 +64,6 @@ class BLEActivity : AppCompatActivity() {
             }
         }
 
-        //bind also title
         binding.scanBLE.setOnClickListener {
             if(isScanning){
                 BLEStopScan()
@@ -83,20 +74,15 @@ class BLEActivity : AppCompatActivity() {
 
 
 
-        //BLE
-
-        //set BLE variables
         setBLEVariables()
 
-        //check BLE availability
         if(!BLEavailable){
             Toast.makeText(this, "BLE is not available for this device", Toast.LENGTH_SHORT).show()
             Log.i("","ERROR : BLE is not available for this device.")
         }else{
-            //debug
+
             Toast.makeText(this, "Ble is available.", Toast.LENGTH_SHORT).show()
 
-            //check if BLE is enable
             promptEnableBluetooth()
         }
     }
@@ -136,19 +122,14 @@ class BLEActivity : AppCompatActivity() {
 
 
 
-    // SCAN
-
-    //callback
     private val BLEScanCallback: ScanCallback = @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     object : ScanCallback() {
         override fun onScanResult(callbackType: Int, result: ScanResult) {
             super.onScanResult(callbackType, result)
 
             if (!result.scanRecord?.deviceName.isNullOrEmpty()) {
-                //check if device already exists in mutable list
                 var deviceFound = false
                 BLEScanList.forEachIndexed { idx, sr ->
-                    //device already registered
 
                     if (sr.device.address == result.device.address) {
                         BLEScanList[idx] = result
@@ -156,7 +137,6 @@ class BLEActivity : AppCompatActivity() {
                         Log.i("bleDevice", "same device")
                     }
                 }
-                //add device
                 if (!deviceFound) {
                     BLEScanList.add(result)
                     Log.i("bleDevice", "add device")
@@ -166,29 +146,23 @@ class BLEActivity : AppCompatActivity() {
         }
     }
 
-    //start - stop
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun BLEStartScan() {
 
-        //display
         binding.scanBLE.text = getString(R.string.scan_pause_ble);
         binding.imageButton.setImageResource(R.drawable.ic_baseline_pause_24)
         binding.progressBarBLE.visibility = View.VISIBLE
         BLEScanList = mutableListOf()
-        //launch scanner
         BLEScanner?.let { scanner ->
             isScanning = true
 
-            //launch timer
             BLEHandler.postDelayed(
                 {
-                    //scan timed out
                     BLEStopScan()
                 },
                 BLE__SCAN_PERIOD
             )
 
-            //start scan
             scanner.startScan(BLEScanCallback)
         }
     }
@@ -196,26 +170,24 @@ class BLEActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun BLEStopScan(){
 
-        //display
         binding.scanBLE.text = getString(R.string.scan_play_ble);
         binding.imageButton.setImageResource(R.drawable.ic_baseline_play_arrow_24)
         binding.progressBarBLE.visibility = View.INVISIBLE
 
-        //stop scanner
         BLEScanner?.let { scanner ->
             isScanning = false
 
-            //stop scan
+
             scanner.stopScan(BLEScanCallback)
         }
     }
 
 
 
-    // DISPLAY
+
     private fun BLEUpdateRecView(){
 
-        //update recycler view
+
         binding.recycleBLE.layoutManager = LinearLayoutManager(this)
         binding.recycleBLE.adapter = DeviceAdapter(
             BLEScanList

@@ -19,12 +19,17 @@ import fr.isen.terrasson.alloresto.R
 
 class DetailBleAdapter(
     private val gatt: BluetoothGatt?,
-    private val serviceList: MutableList<BLEService>, private val context: Context
-) :
-    ExpandableRecyclerViewAdapter<DetailBleAdapter.ServiceViewHolder, DetailBleAdapter.CharacteristicViewHolder>(
-        serviceList
-    ) {
+    private val serviceList: MutableList<BLEService>,
+    private val context: Context,
+    private val expandArrow : ImageView
+) : ExpandableRecyclerViewAdapter<DetailBleAdapter.ServiceViewHolder, DetailBleAdapter.CharacteristicViewHolder>(serviceList) {
+
+
+
+
     private var enabled : Boolean = false
+    private var expanded : Boolean = false
+
     class ServiceViewHolder(itemView: View) : GroupViewHolder(itemView) {
 
         val serviceName: TextView = itemView.findViewById(R.id.nom_parent)
@@ -75,6 +80,14 @@ class DetailBleAdapter(
         val uuid = "UUID : ${characteristic.uuid}"
         holder.characteristicUUID.text = uuid
         holder.characteristicNom.text = title
+
+        if(expanded){
+            expanded = false
+            expandArrow.animate().rotation(-180f).setDuration(400L).start()
+        }else{
+            expanded = true
+            expandArrow.animate().rotation(0f).setDuration(400L).start()
+        }
 
         holder.characteristicReadAction.visibility = View.GONE
         holder.characteristicNotifyAction.visibility = View.GONE

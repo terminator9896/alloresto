@@ -3,8 +3,7 @@ package fr.isen.terrasson.alloresto.ble
 import android.bluetooth.*
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.TextView
+import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import fr.isen.terrasson.alloresto.R
 import fr.isen.terrasson.alloresto.databinding.ActivityBLEDetailsBinding
@@ -15,21 +14,19 @@ class BLEDetailsActivity : AppCompatActivity() {
 
     //binding
     private lateinit var binding : ActivityBLEDetailsBinding
+    private val expandArrow : ImageView = findViewById<ImageView>(R.id.buttonrec_ble)
     var bluetoothGatt: BluetoothGatt? = null
     var statut: String = "statut :  "
 
-    //init
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //init binding instance
         binding = ActivityBLEDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //get device info
         val device = intent.getParcelableExtra<BluetoothDevice>("BLEDeviceInfo")
 
-        //display device info
         binding.deviceDetailBle.text = device?.name ?: "Appareil inconnue"
         bluetoothGatt = device?.connectGatt(this, true, gattCallback)
 
@@ -104,7 +101,9 @@ class BLEDetailsActivity : AppCompatActivity() {
                             it.uuid.toString(),
                             it.characteristics
                         )
-                    }?.toMutableList() ?: arrayListOf(), this@BLEDetailsActivity
+                    }?.toMutableList() ?: arrayListOf(),
+                    this@BLEDetailsActivity,
+                    expandArrow
                 )
                 binding.recBle.layoutManager = LinearLayoutManager(this@BLEDetailsActivity)
             }
@@ -116,4 +115,3 @@ class BLEDetailsActivity : AppCompatActivity() {
         private const val STATE_CONNECTED = "Connecté"
     }
 }
-
